@@ -39,7 +39,7 @@ export default function Footer() {
         © {new Date().getFullYear()}
         <IconButton
           component={Link}
-          href="https://github.com/your-github-username"
+          href="https://edgar-treischl.github.io/TitanicApp/"
           target="_blank"
           rel="noopener"
           size="small"

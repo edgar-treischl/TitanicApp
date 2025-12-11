@@ -1,6 +1,6 @@
-# Logistic Regression App
+# The Titanic App
 
-This Shiny app allows you to explore the Titanic passenger data and
+This React app allows you to explore the Titanic passenger data and
 analyze survival outcomes through visualizations and logistic regression
 models. By using the app, you will deepen your understanding of how
 different factors like sex, age, and passenger class influenced survival
@@ -33,9 +33,4 @@ chances on the Titanic.
   discriminate between survivors and non-survivors.
 
 Ready to dive in? You can inspect the app on my
-[website](http://edgar-treischl.de/projects) or run the app via:
-
-``` r
-library(shiny)
-runGitHub("LogisticApp", "edgar-treischl", ref="main")
-```
+[website](http://edgar-treischl.de/projects).
