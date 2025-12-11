@@ -1,36 +1,40 @@
-# The Titanic App
+# Titanic App
 
-This React app allows you to explore the Titanic passenger data and
-analyze survival outcomes through visualizations and logistic regression
-models. By using the app, you will deepen your understanding of how
-different factors like sex, age, and passenger class influenced survival
-chances on the Titanic.
+A **React app** for exploring Titanic passenger data and analyzing survival outcomes. Visualize patterns, understand logistic regression models, and make predictions based on passenger characteristics.
 
-### 1. Exploring Data Patterns
+## Features
 
-- Visualize survival rates by **sex**, **age**, and **class**.  
-- Understand distributions and relationships through **alluvial plots**,
-  which show how groups flow across categories such as sex, age group,
-  and class.
+- **Explore Data Patterns**  
+  Visualize survival rates by **sex**, **age**, and **class**, and use **alluvial plots** to see how groups flow across categories.
 
-### 2. Understanding Logistic Regression Models
+- **Logistic Regression Models**  
+  Compare models with different predictors and interpret **Odds Ratio** plots to see how each factor influences survival chances.
 
-- See how different models with various predictors (sex, age, class)
-  affect the model.  
-- Interpret **Odds Ratio** plots to understand how each factor increases
-  or decreases the chance of survival.
+- **Make Predictions**  
+  Input hypothetical passenger data (sex, age, class) to get predicted survival probabilities.
 
-### 3. Making Predictions
+- **Evaluate Model Performance**  
+  Check **confusion matrices** and **ROC curves** to understand model accuracy and discrimination.
 
-- Input your own hypothetical passenger characteristics (sex, age,
-  class) and see the predicted probability of survival.
+## Getting Started
 
-### 4. Evaluating Model Performance
+1. Clone the repository:
 
-- Explore model accuracy with **confusion matrices** that show how many
-  passengers were (in-) correctly predicted to survive.  
-- Understand **ROC curves**, which measure the model’s ability to
-  discriminate between survivors and non-survivors.
+```bash
+git clone https://github.com/yourusername/titanic-app.git
+cd titanic-app
+```
 
-Ready to dive in? You can inspect the app on my
-[website](http://edgar-treischl.de/projects).
+2. Install dependencies with Yarn:
+
+```bash
+yarn install
+```
+
+3. Start the development server:
+
+```bash
+yarn dev
+```
+
+Check it out on my [website](http://edgar-treischl.de/projects).

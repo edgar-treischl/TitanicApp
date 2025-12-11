@@ -76,11 +76,6 @@ export default function AgePlot() {
           grid: { line: { stroke: "#e0e0e0" } },
           tooltip: { container: { fontSize: "13px" } },
         }}
-        tooltip={({ id, value, indexValue }) => (
-          <strong>
-            {id} (Age {indexValue}): {value}
-          </strong>
-        )}
       />
     </div>
   );
