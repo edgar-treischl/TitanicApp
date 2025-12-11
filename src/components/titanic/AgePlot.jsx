@@ -1,9 +1,26 @@
 import React from "react";
-import Plot from "react-plotly.js";
+import { ResponsiveBar } from "@nivo/bar";
 import titanicData from "../../data/titanic.json";
 
+// Helper: compute histogram bins
+function getHistogram(data, binSize = 5, max = 80) {
+  const bins = Array.from({ length: Math.ceil(max / binSize) }, (_, i) => ({
+    bin: `${i * binSize}-${(i + 1) * binSize}`,
+    count: 0,
+  }));
+
+  data.forEach((value) => {
+    if (value != null) {
+      const index = Math.min(Math.floor(value / binSize), bins.length - 1);
+      bins[index].count += 1;
+    }
+  });
+
+  return bins;
+}
+
 export default function AgePlot() {
-  // Filter out missing ages and separate by Survived / Not survived
+  // Separate ages by survival
   const survivedAges = titanicData
     .filter((d) => d.Age != null && d.Survived === "Survived")
     .map((d) => d.Age);
@@ -12,74 +29,59 @@ export default function AgePlot() {
     .filter((d) => d.Age != null && d.Survived === "Not survived")
     .map((d) => d.Age);
 
-  // Define colors (consistent palette)
+  // Histogram bins
+  const binSize = 5;
+  const maxAge = 80;
+  const survivedBins = getHistogram(survivedAges, binSize, maxAge);
+  const notSurvivedBins = getHistogram(notSurvivedAges, binSize, maxAge);
+
+  // Merge bins for Nivo
+  const data = survivedBins.map((bin, i) => ({
+    bin: bin.bin,
+    Survived: bin.count,
+    "Not survived": notSurvivedBins[i].count,
+  }));
+
+  // Colors
   const colors = {
     Survived: "#E69F00",       // gold/orange
     "Not survived": "#009E73", // teal/green
   };
 
   return (
-    <Plot
-      data={[
-        {
-          x: notSurvivedAges,
-          type: "histogram",
-          name: "Not survived",
-          marker: { color: colors["Not survived"] },
-          opacity: 0.5,
-          autobinx: false,
-          xbins: {
-            start: 0,
-            end: 80,
-            size: 5,
-          },
-          histnorm: "percent",
-        },
-        {
-          x: survivedAges,
-          type: "histogram",
-          name: "Survived",
-          marker: { color: colors.Survived },
-          opacity: 0.5,
-          autobinx: false,
-          xbins: {
-            start: 0,
-            end: 80,
-            size: 5,
-          },
-          histnorm: "percent",
-        },
-      ]}
-      layout={{
-        barmode: "overlay",
-        title: {
-          text: "Survival by Age",
-          font: { size: 18 },
-        },
-        xaxis: {
-          title: "Age",
-          range: [0, 80],
-          gridcolor: "#e0e0e0",
-        },
-        yaxis: {
-          title: "Percent (%)",
-          gridcolor: "#e0e0e0",
-        },
-        legend: {
-          orientation: "h",
-          y: -0.25,
-          xanchor: "center",
-          x: 0.5,
-        },
-        margin: { t: 40, l: 60, r: 40, b: 60 },
-        plot_bgcolor: "white",
-        paper_bgcolor: "white",
-      }}
-      config={{
-        responsive: true,
-        displayModeBar: false,
-      }}
-      style={{ width: "100%", height: "500px" }}
-    />
+    <div style={{ height: "100%", width: "100%" }}>
+      <ResponsiveBar
+        data={data}
+        keys={["Not survived", "Survived"]}
+        indexBy="bin"
+        margin={{ top: 30, right: 30, bottom: 60, left: 60 }}
+        padding={0.3}
+        groupMode="overlay"
+        colors={({ id }) => colors[id]}
+        enableGridX={false}
+        enableGridY={true}
+        axisBottom={{
+          tickRotation: -45,
+          legend: "Age",
+          legendPosition: "middle",
+          legendOffset: 40,
+        }}
+        axisLeft={{
+          legend: "Count",
+          legendPosition: "middle",
+          legendOffset: -50,
+        }}
+        theme={{
+          background: "white",
+          grid: { line: { stroke: "#e0e0e0" } },
+          tooltip: { container: { fontSize: "13px" } },
+        }}
+        tooltip={({ id, value, indexValue }) => (
+          <strong>
+            {id} (Age {indexValue}): {value}
+          </strong>
+        )}
+      />
+    </div>
   );
 }

@@ -5,7 +5,8 @@ import {
   Typography,
   ToggleButton,
   ToggleButtonGroup,
-  Box
+  Box,
+  Container
 } from "@mui/material";
 import {
   BarChart,
@@ -18,10 +19,9 @@ import {
   ResponsiveContainer,
   ReferenceLine
 } from "recharts";
-import PageWrapper from "../components/PageWrapper";
 import CardPanel from "../components/CardPanel";
 
-// Import local JSON data
+// Local JSON data
 import or_m1 from "../data/or_m1.json";
 import or_m2 from "../data/or_m2.json";
 import or_m3 from "../data/or_m3.json";
@@ -30,7 +30,6 @@ export default function OddsRatios() {
   const [model, setModel] = useState("m1");
   const [data, setData] = useState([]);
 
-  // ✅ Label mapping — matches R output exactly
   const labelMap = {
     "Sexmale": "Male",
     "PclassSecond class": "2nd Class",
@@ -38,15 +37,12 @@ export default function OddsRatios() {
     "Age": "Age",
   };
 
-  // ✅ Load model data and attach display labels
   useEffect(() => {
     const datasets = { m1: or_m1, m2: or_m2, m3: or_m3 };
-
     const withLabels = (datasets[model] || []).map((d) => ({
       ...d,
       displayLabel: labelMap[d.term] || d.term,
     }));
-
     setData(withLabels);
   }, [model]);
 
@@ -57,63 +53,56 @@ export default function OddsRatios() {
   };
 
   return (
-    <PageWrapper>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          gap: 3,
-        }}
-      >
-        {/* Left Panel: Explanation */}
-        <CardPanel sx={{ flex: 1 }} title="Understanding Odds Ratios">
-          <Typography paragraph>
-            The odds ratio (OR) compares the odds of an event between groups. 
-            For example, if men had the same odds of survival as women, the OR would be 1.
-          </Typography>
-          <Typography paragraph>
-            The odds for men are calculated as survived / not survived = 109 / 468. 
-            For women, the odds are 233 / 81. Dividing the men’s odds by the women’s odds gives the Odds Ratio (OR). 
-            Therefore, the OR for men is 0.081, indicating that men were less likely to survive compared to women.
-          </Typography>
+    <Box sx={{ backgroundColor: "grey.50", minHeight: "100vh", py: 6 }}>
 
-          <Typography variant="h6" paragraph>
-            Interpretation:
-          </Typography>
-          <ul style={{ paddingLeft: "1.2em", marginTop: 0 }}>
-            <li><b>OR &gt; 1</b>: Predictor increases survival odds</li>
-            <li><b>OR = 1</b>: No effect</li>
-            <li><b>0 &lt; OR &lt; 1</b>: Predictor decreases survival odds</li>
-          </ul>
+      {/* Hero Section */}
+      <Container maxWidth="md" sx={{ mb: 6 }}>
+        <Typography variant="h3" gutterBottom sx={{ fontWeight: 600 }}>
+          Understanding Odds Ratios
+        </Typography>
 
-          <Typography paragraph>
-            Men’s OR = 0.08, indicating much lower survival odds compared to women. 
-            For continuous variables like age, predicted probabilities are often easier to interpret.
-          </Typography>
-          <Typography paragraph>
-            Try different models to see how each variable affects survival probabilities in a more intuitive way.
-          </Typography>
-        </CardPanel>
+        <Typography variant="body1" paragraph sx={{ lineHeight: 1.7 }}>
+          The odds ratio (OR) compares the odds of an event between groups. 
+          For example, if men had the same odds of survival as women, the OR would be 1.
+        </Typography>
 
-        {/* Right Panel: OR Plot */}
-        <CardPanel sx={{ flex: 1 }} title="Odds Ratio">
-          <ToggleButtonGroup
-            color="primary"
-            exclusive
-            value={model}
-            onChange={(e, newModel) => newModel && setModel(newModel)}
+        <Typography variant="body1" paragraph sx={{ lineHeight: 1.7 }}>
+          The odds for men are calculated as survived / not survived = 109 / 468. 
+          For women, the odds are 233 / 81. Dividing the men’s odds by the women’s odds gives the Odds Ratio (OR). 
+          Therefore, the OR for men is 0.081, indicating that men were less likely to survive compared to women.
+        </Typography>
+
+        <Typography variant="body1" paragraph sx={{ lineHeight: 1.7 }}>
+          Try different models to see how each variable affects survival probabilities in a more intuitive way.
+        </Typography>
+      </Container>
+
+      {/* Plot Section - centered and aligned */}
+      <Container maxWidth="md" sx={{ mb: 6 }}>
+        <CardPanel>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
             sx={{ mb: 2 }}
           >
-            <ToggleButton value="m1">Model 1</ToggleButton>
-            <ToggleButton value="m2">Model 2</ToggleButton>
-            <ToggleButton value="m3">Model 3</ToggleButton>
-          </ToggleButtonGroup>
+            <Typography variant="h6">Odds Ratio Plot</Typography>
+            <ToggleButtonGroup
+              color="primary"
+              exclusive
+              value={model}
+              onChange={(e, newModel) => newModel && setModel(newModel)}
+              size="small"
+            >
+              <ToggleButton value="m1">Model 1</ToggleButton>
+              <ToggleButton value="m2">Model 2</ToggleButton>
+              <ToggleButton value="m3">Model 3</ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
 
-          {model !== "m0" && (
-            <Typography variant="h6" sx={{ mt: 1, mb: 2 }}>
-              {modelTitles[model]}
-            </Typography>
-          )}
+          <Typography variant="subtitle1" sx={{ mb: 2 }}>
+            {modelTitles[model]}
+          </Typography>
 
           <Box sx={{ width: "100%", height: 400 }}>
             <ResponsiveContainer>
@@ -135,7 +124,6 @@ export default function OddsRatios() {
                   formatter={(value) => value.toFixed(3)}
                   labelFormatter={(label) => `Term: ${label}`}
                 />
-                {/* Add a reference line for OR = 1 */}
                 <ReferenceLine y={1} stroke="#E74C3C" strokeDasharray="4 4" />
                 <Bar dataKey="oddsRatio" fill="#2C3E50">
                   <LabelList
@@ -148,7 +136,26 @@ export default function OddsRatios() {
             </ResponsiveContainer>
           </Box>
         </CardPanel>
-      </Box>
-    </PageWrapper>
+      </Container>
+
+      {/* Subsections */}
+      <Container maxWidth="md" sx={{ mb: 6 }}>
+        <Typography variant="h5" gutterBottom>
+          Key Takeaways
+        </Typography>
+
+        <Typography variant="body1" paragraph sx={{ lineHeight: 1.7 }}>
+          Logistic regression odds ratios allow us to quantify the effect of each predictor on survival odds. 
+          An OR &gt; 1 indicates increased odds, OR = 1 means no effect, and 0 &lt; OR &lt; 1 indicates decreased odds.
+        </Typography>
+
+        <Typography variant="body1" paragraph sx={{ lineHeight: 1.7 }}>
+          Observing multiple models shows how adding variables like passenger class and age affects the ORs of other predictors. 
+          This helps students understand confounding and model adjustment.
+        </Typography>
+      </Container>
+
+    </Box>
   );
 }
+
